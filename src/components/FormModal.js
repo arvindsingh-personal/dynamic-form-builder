@@ -16,8 +16,6 @@ const FormModal = ({ isModalOpen, setIsModalOpen }) => {
 
   useEffect(() => {
     const localStorageData = JSON.parse(localStorage.getItem("formConfig"));
-    console.log(localStorageData);
-
     setData(localStorageData);
   }, []);
 

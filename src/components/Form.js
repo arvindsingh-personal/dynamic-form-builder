@@ -63,7 +63,7 @@ const FormComponent = () => {
           {configButton && (
             <>
               <Button type="primary" onClick={() => setIsModalOpen(true)}>
-                Load form Configuration
+                Load Form Configuration
               </Button>
               <FormModal
                 isModalOpen={isModalOpen}
