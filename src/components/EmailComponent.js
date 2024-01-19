@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import FormContext from "../utils/FormContext";
 import { CloseSquareOutlined } from "@ant-design/icons";
 
-const TextField = ({ serialNum }) => {
+const EmailComponent = ({ serialNum }) => {
   const {
     fields,
     setFields,
@@ -12,7 +12,7 @@ const TextField = ({ serialNum }) => {
     formData,
     setFormData,
   } = useContext(FormContext);
-  const [textField, setTextField] = useState({
+  const [emailField, setEmailField] = useState({
     label: "Label",
     placeholder: "",
     name: "",
@@ -20,13 +20,14 @@ const TextField = ({ serialNum }) => {
   });
   const [checked, setChecked] = useState(false);
 
-  const handleInputChange = (e) => {
+  const handleEmailChange = (e) => {
     const { name, value } = e.target;
-    setTextField({ ...textField, [name]: value });
+    setEmailField({ ...emailField, [name]: value });
   };
 
-  const handleFormInputChange = (e) => {
+  const handleFormEmailChange = (e) => {
     const { name, value } = e.target;
+
     setFormData((prevState) => ({
       ...prevState,
       [name]: value,
@@ -37,31 +38,37 @@ const TextField = ({ serialNum }) => {
     setChecked(e.target.checked);
   };
 
-  const InputElement = (
+  const EmailElement = (
     <Form.Item
-      name={textField?.name}
-      label={textField?.label}
-      rules={[{ required: checked, message: "Please enter a value!" }]}
+      label={emailField?.label}
+      name={emailField?.name}
+      rules={[
+        { required: checked, message: "Please enter a value!" },
+        {
+          type: "email",
+          message: "The input is not valid E-mail!",
+        },
+      ]}
     >
       <Input
-        name={textField?.name}
-        placeholder={textField?.placeholder}
-        onChange={handleFormInputChange}
+        name={emailField?.name}
+        placeholder={emailField?.placeholder}
+        onChange={handleFormEmailChange}
       />
     </Form.Item>
   );
 
   useEffect(() => {
-    setFormFields([...formFields, InputElement]);
+    setFormFields([...formFields, EmailElement]);
   }, []);
 
   useEffect(() => {
     setFormFields((prevState) => [
       ...prevState.slice(0, serialNum),
-      InputElement,
+      EmailElement,
       ...prevState.slice(serialNum + 1),
     ]);
-  }, [textField, checked]);
+  }, [emailField, checked]);
 
   const handleRemove = () => {
     setFormFields((prevState) =>
@@ -74,7 +81,7 @@ const TextField = ({ serialNum }) => {
 
   return (
     <Card
-      title="Text Field"
+      title="Email Field"
       bordered={false}
       style={{
         width: 350,
@@ -90,21 +97,21 @@ const TextField = ({ serialNum }) => {
     >
       <Flex gap="middle" vertical>
         <Input
-          value={textField?.label}
+          value={emailField?.label}
           name="label"
-          onChange={(e) => handleInputChange(e)}
+          onChange={(e) => handleEmailChange(e)}
         />
         <Input
-          value={textField?.placeholder}
+          value={emailField?.placeholder}
           placeholder="Placeholder"
           name="placeholder"
-          onChange={handleInputChange}
+          onChange={handleEmailChange}
         />
         <Input
-          value={textField?.name}
+          value={emailField?.name}
           placeholder="Name"
           name="name"
-          onChange={handleInputChange}
+          onChange={handleEmailChange}
         />
         <Checkbox checked={checked} onClick={handleRequired}>
           Required
@@ -114,4 +121,4 @@ const TextField = ({ serialNum }) => {
   );
 };
 
-export default TextField;
+export default EmailComponent;

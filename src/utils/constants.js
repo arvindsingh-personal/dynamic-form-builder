@@ -1,7 +1,11 @@
-import Button from "../components/Button";
+import ButtonComponent from "../components/Button";
 import CheckBox from "../components/Checkbox";
+import ConditionalDropDown from "../components/ConditionalDropDown";
 import DropDown from "../components/DropDown";
+import EmailComponent from "../components/EmailComponent";
+import NumberComponent from "../components/NumberComponent";
 import RadioButton from "../components/RadioButton";
+import TextAreaComponent from "../components/TextArea";
 import TextField from "../components/TextField";
 
 export const ButtonText = [
@@ -17,6 +21,10 @@ export const ButtonText = [
     name: "Select",
     type: "dropdown",
   },
+  // {
+  //   name: "Conditional Select",
+  //   type: "conditionalDropdown",
+  // },
   {
     name: "Radio Button",
     type: "radio",
@@ -34,10 +42,6 @@ export const ButtonText = [
     type: "number",
   },
   {
-    name: "Password",
-    type: "password",
-  },
-  {
     name: "Button",
     type: "button",
   },
@@ -45,10 +49,14 @@ export const ButtonText = [
 
 export const FormFieldsComponent = {
   text: TextField,
+  textArea: TextAreaComponent,
   radio: RadioButton,
   checkbox: CheckBox,
+  email: EmailComponent,
+  number: NumberComponent,
   dropdown: DropDown,
-  button: Button,
+  // conditionalDropdown: ConditionalDropDown,
+  button: ButtonComponent,
 };
 
 export const FormFields = {
@@ -82,14 +90,3 @@ export const FormFields = {
     options: ["Male", "Female"],
   },
 };
-
-// export const initialForm = {
-//     formName: 'My Custom Form',
-//     fields: [
-//       { type: 'text', label: 'Name', name: 'name', validation: { required: true } },
-//       { type: 'email', label: 'Email', name: 'email', validation: { required: true, pattern: /^\S+@\S+\.\S+$/ } },
-//       { type: 'select', label: 'Country', name: 'country', options: ['USA', 'Canada', 'UK'] },
-//       { type: 'checkbox', label: 'Subscribe to newsletter', name: 'subscribe' },
-//       { type: 'radio', label: 'Gender', name: 'gender', options: ['Male', 'Female'] },
-//     ],
-//   };

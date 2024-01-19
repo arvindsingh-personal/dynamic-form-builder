@@ -3,7 +3,9 @@ import React, { useContext, useEffect, useState } from "react";
 import FormContext from "../utils/FormContext";
 import { CloseSquareOutlined } from "@ant-design/icons";
 
-const TextField = ({ serialNum }) => {
+const { TextArea } = Input;
+
+const TextAreaComponent = ({ serialNum }) => {
   const {
     fields,
     setFields,
@@ -12,7 +14,7 @@ const TextField = ({ serialNum }) => {
     formData,
     setFormData,
   } = useContext(FormContext);
-  const [textField, setTextField] = useState({
+  const [textAreaField, setTextAreaField] = useState({
     label: "Label",
     placeholder: "",
     name: "",
@@ -20,12 +22,12 @@ const TextField = ({ serialNum }) => {
   });
   const [checked, setChecked] = useState(false);
 
-  const handleInputChange = (e) => {
+  const handleTextAreaChange = (e) => {
     const { name, value } = e.target;
-    setTextField({ ...textField, [name]: value });
+    setTextAreaField({ ...textAreaField, [name]: value });
   };
 
-  const handleFormInputChange = (e) => {
+  const handleFormTextAreaChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
       ...prevState,
@@ -37,31 +39,32 @@ const TextField = ({ serialNum }) => {
     setChecked(e.target.checked);
   };
 
-  const InputElement = (
+  const TextAreaElement = (
     <Form.Item
-      name={textField?.name}
-      label={textField?.label}
+      label={textAreaField?.label}
+      name={textAreaField?.name}
       rules={[{ required: checked, message: "Please enter a value!" }]}
     >
-      <Input
-        name={textField?.name}
-        placeholder={textField?.placeholder}
-        onChange={handleFormInputChange}
+      <TextArea
+        rows={4}
+        name={textAreaField?.name}
+        placeholder={textAreaField?.placeholder}
+        onChange={handleFormTextAreaChange}
       />
     </Form.Item>
   );
 
   useEffect(() => {
-    setFormFields([...formFields, InputElement]);
+    setFormFields([...formFields, TextAreaElement]);
   }, []);
 
   useEffect(() => {
     setFormFields((prevState) => [
       ...prevState.slice(0, serialNum),
-      InputElement,
+      TextAreaElement,
       ...prevState.slice(serialNum + 1),
     ]);
-  }, [textField, checked]);
+  }, [textAreaField, checked]);
 
   const handleRemove = () => {
     setFormFields((prevState) =>
@@ -74,7 +77,7 @@ const TextField = ({ serialNum }) => {
 
   return (
     <Card
-      title="Text Field"
+      title="Text Area"
       bordered={false}
       style={{
         width: 350,
@@ -90,21 +93,21 @@ const TextField = ({ serialNum }) => {
     >
       <Flex gap="middle" vertical>
         <Input
-          value={textField?.label}
+          value={textAreaField?.label}
           name="label"
-          onChange={(e) => handleInputChange(e)}
+          onChange={(e) => handleTextAreaChange(e)}
         />
         <Input
-          value={textField?.placeholder}
+          value={textAreaField?.placeholder}
           placeholder="Placeholder"
           name="placeholder"
-          onChange={handleInputChange}
+          onChange={handleTextAreaChange}
         />
         <Input
-          value={textField?.name}
+          value={textAreaField?.name}
           placeholder="Name"
           name="name"
-          onChange={handleInputChange}
+          onChange={handleTextAreaChange}
         />
         <Checkbox checked={checked} onClick={handleRequired}>
           Required
@@ -114,4 +117,4 @@ const TextField = ({ serialNum }) => {
   );
 };
 
-export default TextField;
+export default TextAreaComponent;

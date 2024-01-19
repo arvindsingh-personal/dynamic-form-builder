@@ -1,7 +1,17 @@
-import { Button, Card, Flex, Input, Radio, Space } from "antd";
-import React, { useState } from "react";
+import { Button, Card, Checkbox, Flex, Form, Input, Radio, Space } from "antd";
+import React, { useContext, useEffect, useState } from "react";
+import FormContext from "../utils/FormContext";
+import { CloseSquareOutlined } from "@ant-design/icons";
 
-const RadioButton = () => {
+const RadioButton = ({ serialNum }) => {
+  const {
+    fields,
+    setFields,
+    formFields,
+    setFormFields,
+    formData,
+    setFormData,
+  } = useContext(FormContext);
   const [radioField, setRadioField] = useState({
     label: "Label",
     name: "",
@@ -12,6 +22,47 @@ const RadioButton = () => {
       value: "Value",
     },
   ]);
+  const [checked, setChecked] = useState(false);
+
+  const handleRequired = (e) => {
+    setChecked(e.target.checked);
+  };
+
+  const handleFormRadioChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const SelectElement = (
+    <Form.Item
+      label={radioField?.label}
+      name={radioField?.name}
+      rules={[{ required: checked, message: "Please enter a value!" }]}
+    >
+      <Radio.Group onChange={handleFormRadioChange} name={radioField?.name}>
+        <Space direction="vertical">
+          {options?.map((option, index) => (
+            <Radio value={option?.value}>{option?.label}</Radio>
+          ))}
+        </Space>
+      </Radio.Group>
+    </Form.Item>
+  );
+
+  useEffect(() => {
+    setFormFields([...formFields, SelectElement]);
+  }, []);
+
+  useEffect(() => {
+    setFormFields((prevState) => [
+      ...prevState.slice(0, serialNum),
+      SelectElement,
+      ...prevState.slice(serialNum + 1),
+    ]);
+  }, [radioField, options, checked]);
 
   const handleRadioChange = (e) => {
     const { name, value } = e.target;
@@ -27,8 +78,6 @@ const RadioButton = () => {
     );
   };
 
-  console.log(options);
-
   const addOption = () => {
     setOptions([...options, { label: "Option", value: "Value" }]);
   };
@@ -39,48 +88,74 @@ const RadioButton = () => {
     );
   };
 
+  const handleRemove = () => {
+    setFormFields((prevState) =>
+      prevState?.filter((_, index) => index !== serialNum)
+    );
+    setFields((prevState) =>
+      prevState?.filter((_, index) => index !== serialNum)
+    );
+  };
+
   return (
     <Card
       title="Radio Button"
       bordered={false}
-      style={{ width: 300, backgroundColor: "#dedfe0" }}
+      style={{
+        width: 350,
+        margin: "10px",
+        backgroundColor: "#dedfe0",
+      }}
+      extra={
+        <CloseSquareOutlined
+          style={{ fontSize: "24px", cursor: "pointer" }}
+          onClick={handleRemove}
+        />
+      }
     >
-      <Input
-        value={radioField?.label}
-        name="label"
-        onChange={handleRadioChange}
-      />
-      <Input
-        value={radioField?.name}
-        placeholder="Name"
-        name="name"
-        onChange={handleRadioChange}
-      />
-      <Radio.Group>
-        <Space direction="vertical">
-          {options?.map((option, index) => (
-            <Radio value={option?.value}>{option?.label}</Radio>
-          ))}
-        </Space>
-      </Radio.Group>
+      <Flex gap="middle" vertical>
+        <Input
+          value={radioField?.label}
+          name="label"
+          onChange={handleRadioChange}
+        />
+        <Input
+          value={radioField?.name}
+          placeholder="Name"
+          name="name"
+          onChange={handleRadioChange}
+        />
+        <Radio.Group>
+          <Space direction="vertical">
+            {options?.map((option, index) => (
+              <Radio value={option?.value}>{option?.label}</Radio>
+            ))}
+          </Space>
+        </Radio.Group>
 
-      {options?.map((option, index) => (
-        <Flex gap={"small"} key={index}>
-          <Input
-            value={option?.label}
-            name="label"
-            onChange={(e) => handleOptionChange(index, e)}
-          />
-          <Input
-            value={option?.value}
-            name="value"
-            onChange={(e) => handleOptionChange(index, e)}
-          />
-          <Button onClick={addOption}>+</Button>
+        {options?.map((option, index) => (
+          <Flex gap={"small"} key={index}>
+            <Input
+              value={option?.label}
+              name="label"
+              onChange={(e) => handleOptionChange(index, e)}
+            />
+            <Input
+              value={option?.value}
+              name="value"
+              onChange={(e) => handleOptionChange(index, e)}
+            />
+            <Button onClick={addOption}>+</Button>
 
-          {index > 0 && <Button onClick={() => removeOption(index)}>-</Button>}
-        </Flex>
-      ))}
+            {index > 0 && (
+              <Button onClick={() => removeOption(index)}>-</Button>
+            )}
+          </Flex>
+        ))}
+        <Checkbox checked={checked} onClick={handleRequired}>
+          Required
+        </Checkbox>
+      </Flex>
     </Card>
   );
 };

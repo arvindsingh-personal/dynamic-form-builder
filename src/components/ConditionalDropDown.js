@@ -1,18 +1,13 @@
-import { Button, Card, Checkbox, Flex, Form, Input, Space } from "antd";
+import { Button, Card, Checkbox, Flex, Form, Input, Select, Space } from "antd";
 import React, { useContext, useEffect, useState } from "react";
 import FormContext from "../utils/FormContext";
-import { CloseSquareOutlined } from "@ant-design/icons";
 
-const CheckBox = ({ serialNum }) => {
-  const {
-    fields,
-    setFields,
-    formFields,
-    setFormFields,
-    formData,
-    setFormData,
-  } = useContext(FormContext);
-  const [checkboxField, setCheckboxField] = useState({
+const { Option } = Select;
+
+const ConditionalDropDown = ({ serialNum }) => {
+  const { formFields, setFormFields, formData, setFormData } =
+    useContext(FormContext);
+  const [selectBoxField, setSelectBoxField] = useState({
     label: "Label",
     name: "",
   });
@@ -23,52 +18,51 @@ const CheckBox = ({ serialNum }) => {
     },
   ]);
   const [checked, setChecked] = useState(false);
+  const [innerBtn, setInnerBtn] = useState(false);
+
+  const handleFormSelectBoxChange = (value) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      [selectBoxField?.name]: value,
+    }));
+  };
 
   const handleRequired = (e) => {
     setChecked(e.target.checked);
   };
 
-  const handleFormCheckboxChange = (value) => {
-    if (value?.length) {
-      setFormData((prevState) => ({
-        ...prevState,
-        [checkboxField?.name]: value,
-      }));
-    } else {
-      const updatedObject = Object.fromEntries(
-        Object.entries(formData).filter(([key]) => key !== checkboxField?.name)
-      );
-      setFormData(updatedObject);
-    }
-  };
-
-  const CheckboxElement = (
+  const SelectElement = (
     <Form.Item
-      label={checkboxField?.label}
-      name={checkboxField?.name}
+      label={selectBoxField?.label}
+      name={selectBoxField?.name}
       rules={[{ required: checked, message: "Please enter a value!" }]}
     >
-      <Space direction="vertical">
-        <Checkbox.Group options={options} onChange={handleFormCheckboxChange} />
-      </Space>
+      <Select
+        placeholder="Select an option"
+        onChange={handleFormSelectBoxChange}
+      >
+        {options?.map((option) => (
+          <Option value={option?.value}>{option?.label}</Option>
+        ))}
+      </Select>
     </Form.Item>
   );
 
   useEffect(() => {
-    setFormFields([...formFields, CheckboxElement]);
+    setFormFields([...formFields, SelectElement]);
   }, []);
 
   useEffect(() => {
     setFormFields((prevState) => [
       ...prevState.slice(0, serialNum),
-      CheckboxElement,
+      SelectElement,
       ...prevState.slice(serialNum + 1),
     ]);
-  }, [checkboxField, options, checked]);
+  }, [selectBoxField, options, checked]);
 
-  const handleCheckboxChange = (e) => {
+  const handleSelectBoxChange = (e) => {
     const { name, value } = e.target;
-    setCheckboxField({ ...checkboxField, [name]: value });
+    setSelectBoxField({ ...selectBoxField, [name]: value });
   };
 
   const handleOptionChange = (recievedIndex, e) => {
@@ -90,50 +84,41 @@ const CheckBox = ({ serialNum }) => {
     );
   };
 
-  const handleRemove = () => {
-    setFormFields((prevState) =>
-      prevState?.filter((_, index) => index !== serialNum)
-    );
-    setFields((prevState) =>
-      prevState?.filter((_, index) => index !== serialNum)
-    );
+  const handleInnerClick = () => {
+    setInnerBtn(!innerBtn);
   };
 
   return (
     <Card
-      title="Checkbox"
+      title="Select"
       bordered={false}
       style={{
         width: 350,
         margin: "10px",
         backgroundColor: "#dedfe0",
+        backgroundColor: "#dedfe0",
       }}
-      extra={
-        <CloseSquareOutlined
-          style={{ fontSize: "24px", cursor: "pointer" }}
-          onClick={handleRemove}
-        />
-      }
     >
       <Flex gap="middle" vertical>
         <Input
-          value={checkboxField?.label}
+          value={selectBoxField?.label}
           name="label"
-          onChange={handleCheckboxChange}
+          onChange={handleSelectBoxChange}
         />
         <Input
-          value={checkboxField?.name}
+          value={selectBoxField?.name}
           placeholder="Name"
           name="name"
-          onChange={handleCheckboxChange}
+          onChange={handleSelectBoxChange}
         />
-        <Checkbox.Group style={{ width: "100%" }}>
-          <Space direction="vertical">
-            {options?.map((option, index) => (
-              <Checkbox value={option?.value}>{option?.label}</Checkbox>
-            ))}
-          </Space>
-        </Checkbox.Group>
+        <Space wrap>
+          <Select
+            defaultValue={options[0]?.label}
+            style={{ width: 120 }}
+            allowClear
+            options={options}
+          />
+        </Space>
         {options?.map((option, index) => (
           <Flex gap={"small"} key={index}>
             <Input
@@ -153,6 +138,20 @@ const CheckBox = ({ serialNum }) => {
             )}
           </Flex>
         ))}
+        <Button
+          type="primary"
+          style={{ width: "100px" }}
+          onClick={handleInnerClick}
+        >
+          Inner Field
+        </Button>
+        {innerBtn && (
+          <Flex gap="middle" vertical>
+            <Input />
+            <Input />
+            <Input />
+          </Flex>
+        )}
         <Checkbox checked={checked} onClick={handleRequired}>
           Required
         </Checkbox>
@@ -161,4 +160,4 @@ const CheckBox = ({ serialNum }) => {
   );
 };
 
-export default CheckBox;
+export default ConditionalDropDown;
