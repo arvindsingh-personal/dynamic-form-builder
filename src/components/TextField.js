@@ -1,5 +1,5 @@
-import { Card, Checkbox, Flex, Form, Input } from "antd";
-import React, { useContext, useEffect, useState } from "react";
+import { Button, Card, Checkbox, Flex, Form, Input } from "antd";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import FormContext from "../utils/FormContext";
 import { CloseSquareOutlined } from "@ant-design/icons";
 
@@ -37,23 +37,21 @@ const TextField = ({ serialNum }) => {
     setChecked(e.target.checked);
   };
 
-  const InputElement = (
-    <Form.Item
-      name={textField?.name}
-      label={textField?.label}
-      rules={[{ required: checked, message: "Please enter a value!" }]}
-    >
-      <Input
+  const InputElement = useCallback(() => {
+    return (
+      <Form.Item
         name={textField?.name}
-        placeholder={textField?.placeholder}
-        onChange={handleFormInputChange}
-      />
-    </Form.Item>
-  );
-
-  useEffect(() => {
-    setFormFields([...formFields, InputElement]);
-  }, []);
+        label={textField?.label}
+        rules={[{ required: checked, message: "Please enter a value!" }]}
+      >
+        <Input
+          name={textField?.name}
+          placeholder={textField?.placeholder}
+          onChange={handleFormInputChange}
+        />
+      </Form.Item>
+    );
+  }, [textField, checked]);
 
   useEffect(() => {
     setFormFields((prevState) => [
@@ -71,6 +69,8 @@ const TextField = ({ serialNum }) => {
       prevState?.filter((_, index) => index !== serialNum)
     );
   };
+
+  console.log("formFields: ", formFields, "fields: ", fields);
 
   return (
     <Card

@@ -1,5 +1,5 @@
 import { Card, Checkbox, Flex, Form, Input } from "antd";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import FormContext from "../utils/FormContext";
 import { CloseSquareOutlined } from "@ant-design/icons";
 
@@ -38,29 +38,27 @@ const EmailComponent = ({ serialNum }) => {
     setChecked(e.target.checked);
   };
 
-  const EmailElement = (
-    <Form.Item
-      label={emailField?.label}
-      name={emailField?.name}
-      rules={[
-        { required: checked, message: "Please enter a value!" },
-        {
-          type: "email",
-          message: "The input is not valid E-mail!",
-        },
-      ]}
-    >
-      <Input
+  const EmailElement = useCallback(() => {
+    return (
+      <Form.Item
+        label={emailField?.label}
         name={emailField?.name}
-        placeholder={emailField?.placeholder}
-        onChange={handleFormEmailChange}
-      />
-    </Form.Item>
-  );
-
-  useEffect(() => {
-    setFormFields([...formFields, EmailElement]);
-  }, []);
+        rules={[
+          { required: checked, message: "Please enter a value!" },
+          {
+            type: "email",
+            message: "The input is not valid E-mail!",
+          },
+        ]}
+      >
+        <Input
+          name={emailField?.name}
+          placeholder={emailField?.placeholder}
+          onChange={handleFormEmailChange}
+        />
+      </Form.Item>
+    );
+  }, [emailField, checked]);
 
   useEffect(() => {
     setFormFields((prevState) => [

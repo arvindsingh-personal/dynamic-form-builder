@@ -1,5 +1,5 @@
 import { Card, Checkbox, Flex, Form, Input, InputNumber } from "antd";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import FormContext from "../utils/FormContext";
 import { CloseSquareOutlined } from "@ant-design/icons";
 
@@ -32,31 +32,29 @@ const NumberComponent = ({ serialNum }) => {
     setChecked(e.target.checked);
   };
 
-  const NumberElement = (
-    <Form.Item
-      label={numberField?.label}
-      name={numberField?.name}
-      rules={[
-        { required: checked, message: "Please enter a value!" },
-        {
-          type: numberField?.type.toLowerCase(),
-          message: "Enter only numbers",
-        },
-      ]}
-    >
-      <InputNumber
+  const NumberElement = useCallback(() => {
+    return (
+      <Form.Item
+        label={numberField?.label}
         name={numberField?.name}
-        placeholder={numberField?.placeholder}
-        onChange={handleFormNumberChange}
-        maxLength={numberField?.length}
-        style={{ width: "100%" }}
-      />
-    </Form.Item>
-  );
-
-  useEffect(() => {
-    setFormFields([...formFields, NumberElement]);
-  }, []);
+        rules={[
+          { required: checked, message: "Please enter a value!" },
+          {
+            type: numberField?.type.toLowerCase(),
+            message: "Enter only numbers",
+          },
+        ]}
+      >
+        <InputNumber
+          name={numberField?.name}
+          placeholder={numberField?.placeholder}
+          onChange={handleFormNumberChange}
+          maxLength={numberField?.length}
+          style={{ width: "100%" }}
+        />
+      </Form.Item>
+    );
+  }, [numberField, checked]);
 
   useEffect(() => {
     setFormFields((prevState) => [

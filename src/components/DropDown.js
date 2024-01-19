@@ -1,5 +1,5 @@
 import { Button, Card, Checkbox, Flex, Form, Input, Select, Space } from "antd";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import FormContext from "../utils/FormContext";
 import { CloseSquareOutlined } from "@ant-design/icons";
 
@@ -37,26 +37,24 @@ const DropDown = ({ serialNum }) => {
     setChecked(e.target.checked);
   };
 
-  const SelectElement = (
-    <Form.Item
-      label={selectBoxField?.label}
-      name={selectBoxField?.name}
-      rules={[{ required: checked, message: "Please enter a value!" }]}
-    >
-      <Select
-        placeholder="Select an option"
-        onChange={handleFormSelectBoxChange}
+  const SelectElement = useCallback(() => {
+    return (
+      <Form.Item
+        label={selectBoxField?.label}
+        name={selectBoxField?.name}
+        rules={[{ required: checked, message: "Please enter a value!" }]}
       >
-        {options?.map((option) => (
-          <Option value={option?.value}>{option?.label}</Option>
-        ))}
-      </Select>
-    </Form.Item>
-  );
-
-  useEffect(() => {
-    setFormFields([...formFields, SelectElement]);
-  }, []);
+        <Select
+          placeholder="Select an option"
+          onChange={handleFormSelectBoxChange}
+        >
+          {options?.map((option) => (
+            <Option value={option?.value}>{option?.label}</Option>
+          ))}
+        </Select>
+      </Form.Item>
+    );
+  }, [selectBoxField, options, checked]);
 
   useEffect(() => {
     setFormFields((prevState) => [

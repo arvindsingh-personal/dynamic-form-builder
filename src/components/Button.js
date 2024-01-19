@@ -1,5 +1,5 @@
 import { Button, Card, Flex, Form, Input } from "antd";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import FormContext from "../utils/FormContext";
 import { CloseSquareOutlined } from "@ant-design/icons";
 
@@ -17,21 +17,19 @@ const ButtonComponent = ({ serialNum }) => {
     setButtonField({ ...buttonField, [name]: value });
   };
 
-  const BtnElement = (
-    <Form.Item>
-      <Button
-        type={buttonField?.type}
-        htmlType="submit"
-        style={{ marginLeft: "50px" }}
-      >
-        {buttonField?.value}
-      </Button>
-    </Form.Item>
-  );
-
-  useEffect(() => {
-    setFormFields([...formFields, BtnElement]);
-  }, []);
+  const BtnElement = useCallback(() => {
+    return (
+      <Form.Item>
+        <Button
+          type={buttonField?.type}
+          htmlType="submit"
+          style={{ marginLeft: "50px" }}
+        >
+          {buttonField?.value}
+        </Button>
+      </Form.Item>
+    );
+  }, [buttonField]);
 
   useEffect(() => {
     setFormFields((prevState) => [
@@ -49,6 +47,8 @@ const ButtonComponent = ({ serialNum }) => {
       prevState?.filter((_, index) => index !== serialNum)
     );
   };
+
+  console.log("formFields: ", formFields, "fields: ", fields);
 
   return (
     <Card

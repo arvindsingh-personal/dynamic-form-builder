@@ -56,7 +56,7 @@ const FormComponent = () => {
               scrollToFirstError
             >
               {formFields?.map((Field) => (
-                <>{Field}</>
+                <>{Field()}</>
               ))}
             </Form>
           </div>

@@ -1,5 +1,5 @@
 import { Button, Card, Checkbox, Flex, Form, Input, Radio, Space } from "antd";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import FormContext from "../utils/FormContext";
 import { CloseSquareOutlined } from "@ant-design/icons";
 
@@ -36,25 +36,23 @@ const RadioButton = ({ serialNum }) => {
     }));
   };
 
-  const SelectElement = (
-    <Form.Item
-      label={radioField?.label}
-      name={radioField?.name}
-      rules={[{ required: checked, message: "Please enter a value!" }]}
-    >
-      <Radio.Group onChange={handleFormRadioChange} name={radioField?.name}>
-        <Space direction="vertical">
-          {options?.map((option, index) => (
-            <Radio value={option?.value}>{option?.label}</Radio>
-          ))}
-        </Space>
-      </Radio.Group>
-    </Form.Item>
-  );
-
-  useEffect(() => {
-    setFormFields([...formFields, SelectElement]);
-  }, []);
+  const SelectElement = useCallback(() => {
+    return (
+      <Form.Item
+        label={radioField?.label}
+        name={radioField?.name}
+        rules={[{ required: checked, message: "Please enter a value!" }]}
+      >
+        <Radio.Group onChange={handleFormRadioChange} name={radioField?.name}>
+          <Space direction="vertical">
+            {options?.map((option, index) => (
+              <Radio value={option?.value}>{option?.label}</Radio>
+            ))}
+          </Space>
+        </Radio.Group>
+      </Form.Item>
+    );
+  }, [radioField, options, checked]);
 
   useEffect(() => {
     setFormFields((prevState) => [
@@ -96,6 +94,8 @@ const RadioButton = ({ serialNum }) => {
       prevState?.filter((_, index) => index !== serialNum)
     );
   };
+
+  console.log("formFields: ", formFields, "fields: ", fields);
 
   return (
     <Card
