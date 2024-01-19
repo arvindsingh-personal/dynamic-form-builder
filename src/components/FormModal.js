@@ -31,7 +31,7 @@ const FormModal = ({ isModalOpen, setIsModalOpen }) => {
           <Flex gap="middle" key={index}>
             {data?.map((innerData, i) => (
               <Text key={i} strong>
-                {typeof innerData === "string" || typeof innerData === "number"
+                {typeof innerData === "string"
                   ? innerData
                       ?.split("_")
                       ?.map(
@@ -39,6 +39,8 @@ const FormModal = ({ isModalOpen, setIsModalOpen }) => {
                           word?.charAt(0)?.toUpperCase() + word?.slice(1)
                       )
                       .join(" ")
+                  : typeof innerData === "number"
+                  ? innerData
                   : innerData?.map((word) => word)?.join(", ")}
               </Text>
             ))}
